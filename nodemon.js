@@ -4,6 +4,8 @@ let yourPokemon = "";
 let xp = 0;
 let yourHP = 100;
 let theirHP = 100;
+let yourPkmType = '';
+let theirPkmType = '';
 function startGame() {
     inquirer.prompt([{
         type: 'input',
@@ -38,10 +40,14 @@ function choosePokemon() {
             let yourPokemon = answer.firstPokemon;
 
             if (yourPokemon === 'Bulbasaur') {
+                yourPkmType = 'Grass';
+                typeChart.grass();
                 console.log('Your pokemon is a grass type. It is weak to fire types but strong against water types.');
             } else if (yourPokemon === 'Charmander') {
+                yourPkmType = 'Fire';
                 console.log('Your Pokemon is a fire type. It is weak to water types but strong against grass types.');
             } else if (yourPokemon === 'Squirtle') {
+                yourPkmType = 'Water';
                 console.log('Your Pokemon is a water type. It is weak to grass types but stong against fire types.');
             }
             whatIsYourQuest();
@@ -60,7 +66,10 @@ function battleRdy() {
         if (answer.readyForBattle) {
             console.log(answer.readyForBattle);
             console.log('A wild rattata appears.');
+            theirPkmType = 'Normal';
             battle();
+        } else {
+            whatIsYourQuest();
         }
     });
 }
@@ -79,16 +88,23 @@ function battle() {
         name: 'battleOption'
 
     }]).then(function (answer) {
-        console.log(answer);
         if (answer.battleOption === 'Attack') {
             yourHP -= theirDamage;
-
+            console.log("Your type is " + yourPkmType);
+            console.log("Their type is " + theirPkmType);
             console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP");
-            battle();
+            if (yourHP > 0) {
+                battle();
+            } else {
+                console.log('You lost the battle');
+                console.log('HP: ' + yourHP + "/100");
+                whatIsYourQuest();
+            }
         }
         if (answer.battleOption === 'Run') {
             theirHP = 100;
-            return;
+            console.log('You returned from battle.');
+            whatIsYourQuest();
         }
 
     });
@@ -107,7 +123,18 @@ function whatIsYourQuest() {
         if (answer.foreground === 'Go to the Pokemon Center') {
             yourHP = 100;
             console.log('Your pokemon has been fully healed');
+            console.log('HP: ' + yourHP + "/100");
+            whatIsYourQuest();
         }
+        if (answer.foreground === 'Battle a trainer') {
+            console.log('Sorry we have not developed this feature of the game yet. Please come again.');
+            whatIsYourQuest();
+        }
+        if (answer.foreground === 'Battle Gary') {
+            console.log('Sorry we have not developed this feature of the game yet. Please come again.');
+            whatIsYourQuest();
+        }
+        
     });
 }
 
@@ -116,3 +143,10 @@ function whatIsYourQuest() {
 // }
 
 startGame();
+
+module.exports = {
+    yourPkmType: yourPkmType,
+    theirPkmType: theirPkmType,
+    theirHP: theirHP,
+    yourHP: yourHP,
+};
