@@ -1,11 +1,17 @@
 const inquirer = require('inquirer');
+const pokemon = require('pokemon');
 const typeChart = require('./typeChart');
+
 let yourPokemon = "";
-let xp = 0;
+let xp = 100;
 let yourHP = 100;
 let theirHP = 100;
 let yourPkmType = '';
 let theirPkmType = '';
+let level = 1;
+
+
+
 function startGame() {
     inquirer.prompt([{
         type: 'input',
@@ -23,7 +29,7 @@ function choosePokemon() {
     inquirer.prompt([{
             type: 'list',
             message: 'Which Pokemon do you choose?',
-            choices: ['Bulbasaur', 'Squirtle', 'Charmander'],
+            choices: [pokemon.getName(1), pokemon.getName(4), pokemon.getName(7)],
             name: 'firstPokemon'
 
         },
@@ -64,9 +70,9 @@ function battleRdy() {
         name: 'readyForBattle'
     }]).then(function (answer) {
         if (answer.readyForBattle) {
-            console.log(answer.readyForBattle);
             console.log('A wild rattata appears.');
             theirPkmType = 'Normal';
+            theirHP = 100;
             battle();
         } else {
             whatIsYourQuest();
@@ -78,7 +84,7 @@ function battleRdy() {
 
 function battle() {
 
-    let yourDamage = 1;
+    let yourDamage = 25;
     let theirDamage = 10;
 
     inquirer.prompt([{
@@ -90,16 +96,26 @@ function battle() {
     }]).then(function (answer) {
         if (answer.battleOption === 'Attack') {
             yourHP -= theirDamage;
+            theirHP -= yourDamage;
             console.log("Your type is " + yourPkmType);
             console.log("Their type is " + theirPkmType);
-            console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP");
-            if (yourHP > 0) {
+            console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP.");
+            console.log("You dealt " + yourDamage + " damage to the Rattata. They now have " + theirHP + " HP.");
+            if (yourHP > 0 && theirHP > 0) {
                 battle();
-            } else {
+            } else if (yourHP <= 0) {
                 console.log('You lost the battle');
                 console.log('HP: ' + yourHP + "/100");
                 whatIsYourQuest();
+            } else if (theirHP <= 0) {
+                console.log('You won the battle!');
+                let xpGain = 50;
+                console.log('You gained ' + xpGain + ' experience.');
+                xp += xpGain;
+                calculateLevel();
+                whatIsYourQuest();
             }
+            
         }
         if (answer.battleOption === 'Run') {
             theirHP = 100;
@@ -108,6 +124,11 @@ function battle() {
         }
 
     });
+}
+
+function calculateLevel() {
+    level = Math.floor(xp/100);
+    console.log ('Your pokemon is level ' + level + '.');
 }
 
 function whatIsYourQuest() {

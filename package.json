@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/lrminer/Nodemon#readme",
   "dependencies": {
-    "inquirer": "^6.5.0"
+    "inquirer": "^6.5.0",
+    "pokemon": "^2.0.0"
   }
 }
