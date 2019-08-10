@@ -1,9 +1,9 @@
 const inquirer = require('inquirer');
+const typeChart = require('./typeChart');
 let yourPokemon = "";
 let xp = 0;
 let yourHP = 100;
 let theirHP = 100;
-
 function startGame() {
     inquirer.prompt([{
         type: 'input',
