@@ -52,7 +52,7 @@ function choosePokemon() {
 
             if (yourPokemon === 'Bulbasaur') {
                 yourPkmType = 'grass';
-                typeChart.grass();
+                typeChart.typechart.grass();
                 console.log('Your pokemon is a grass type. It is weak to fire types but strong against water types.');
             } else if (yourPokemon === 'Charmander') {
                 yourPkmType = 'fire';
@@ -129,11 +129,11 @@ function trainerBattle() {
     }]).then(function (answer) {
         if (answer.battleOption === 'Attack') {
             yourHP -= theirDamage;
-            theirHP -= typeChart.grass(yourDamage);
+            theirHP -= typeChart.typechart.grass(yourDamage);
             console.log("Your type is " + yourPkmType);
             console.log("Their type is " + theirPkmType);
             console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP.");
-            console.log("You dealt " + typeChart.grass(yourDamage) + " damage to the " + wildPokemon + ". They now have " + theirHP + " HP.");
+            console.log("You dealt " + typeChart.typechart.grass(yourDamage) + " damage to the " + wildPokemon + ". They now have " + theirHP + " HP.");
             if (yourHP > 0 && theirHP > 0) {
                 battle();
             } else if (yourHP <= 0) {
@@ -173,12 +173,12 @@ function battle() {
     }]).then(function (answer) {
         if (answer.battleOption === 'Attack') {
             yourHP -= theirDamage;
-            console.log(typeChart.grass(yourDamage));
+            console.log(typeChart.typechart.grass(yourDamage));
             theirHP -= yourDamage;
             console.log("Your type is " + yourPkmType);
             console.log("Their type is " + theirPkmType);
             console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP.");
-            console.log("You dealt " + typeChart.grass(yourDamage) + " damage to the " + wildPokemon + ". They now have " + theirHP + " HP.");
+            console.log("You dealt " + typeChart.typechart.grass(yourDamage) + " damage to the " + wildPokemon + ". They now have " + theirHP + " HP.");
             if (yourHP > 0 && theirHP > 0) {
                 battle();
             } else if (yourHP <= 0) {
