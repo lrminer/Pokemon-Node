@@ -16,4 +16,6 @@ The game of Pokemon through the command line! Create saves, start an adventure, 
 * Pokemon Center
 * Battle a trainer (not yet added)
 * Battle Gary (not yet added)
+* Catching Pokemon (not yet added)
 * Saving (not yet added)
+
