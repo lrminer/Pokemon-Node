@@ -9,9 +9,10 @@ let enemyPokemon = "";
 let xp = 500;
 let yourHP = 100;
 let theirHP = 100;
-let yourPkmType = '';
-let theirPkmType = '';
+let yourPkmType = 'grass';
+let theirPkmType = 'Normal';
 let level = 5;
+let money = 0;
 
 
 
@@ -19,10 +20,11 @@ function startGame() {
     inquirer.prompt([{
         type: 'input',
         message: 'Hello! Welcome to the world of Nodemon! What is your name?',
-        name: 'playerName'
+        name: 'playerName',
+        default: 'Ash Ketchum'
     }]).then(function (answer) {
         if (answer.playerName) {
-            console.log("Welcome " + answer.playerName);
+            console.log("Welcome " + answer.playerName + "!");
             choosePokemon();
         }
     });
@@ -49,19 +51,17 @@ function choosePokemon() {
             let yourPokemon = answer.firstPokemon;
 
             if (yourPokemon === 'Bulbasaur') {
-                yourPkmType = 'Grass';
+                yourPkmType = 'grass';
                 typeChart.grass();
                 console.log('Your pokemon is a grass type. It is weak to fire types but strong against water types.');
             } else if (yourPokemon === 'Charmander') {
-                yourPkmType = 'Fire';
+                yourPkmType = 'fire';
                 console.log('Your Pokemon is a fire type. It is weak to water types but strong against grass types.');
             } else if (yourPokemon === 'Squirtle') {
-                yourPkmType = 'Water';
+                yourPkmType = 'water';
                 console.log('Your Pokemon is a water type. It is weak to grass types but stong against fire types.');
             }
             overWorld();
-            return yourPokemon;
-
         }
     });
 }
@@ -75,7 +75,7 @@ function wildBattle() {
         if (answer.readyForBattle) {
             theirPkmType = 'Normal';
             theirHP = 100;
-            let wildPokemonOptions = [16,19,21,29,32,56];
+            let wildPokemonOptions = [16, 19, 21, 29, 32, 56];
             let randomWildPokemon = wildPokemonOptions[Math.floor(Math.random() * wildPokemonOptions.length)];
             axios.get(`https://pokeapi.co/api/v2/pokemon/${randomWildPokemon}/`)
                 .then(function (response) {
@@ -83,7 +83,7 @@ function wildBattle() {
                     console.log('A wild ' + JSON.stringify(response.data.name) + ' appears.');
                     wildPokemon = JSON.stringify(response.data.name);
                     battle();
-                    
+
                 });
         } else {
             overWorld();
@@ -91,12 +91,12 @@ function wildBattle() {
     });
 }
 
-function battleGary () {
+function battleGary() {
     inquirer.prompt([{
         type: 'confirm',
         message: 'Are you ready to battle your rival, Gary?',
         name: 'readyForBattle'
-    }]).then(function(answer){
+    }]).then(function (answer) {
         if (answer.readyForBattle) {
             if (yourPokemon === 'Bulbasaur') {
                 theirPkmType = 'fire';
@@ -112,13 +112,53 @@ function battleGary () {
                 enemyPokemon = 'Eevee';
             }
             trainerBattle();
-                
+
         }
     });
 }
+
 function trainerBattle() {
-    console.log ('Work in progress');
+    let yourDamage = 5 * level;
+    let theirDamage = 5 * level;
+
+    inquirer.prompt([{
+        type: 'list',
+        choices: ['Attack', 'Run'],
+        message: 'What do you do',
+        name: 'battleOption'
+    }]).then(function (answer) {
+        if (answer.battleOption === 'Attack') {
+            yourHP -= theirDamage;
+            theirHP -= typeChart.grass(yourDamage);
+            console.log("Your type is " + yourPkmType);
+            console.log("Their type is " + theirPkmType);
+            console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP.");
+            console.log("You dealt " + typeChart.grass(yourDamage) + " damage to the " + wildPokemon + ". They now have " + theirHP + " HP.");
+            if (yourHP > 0 && theirHP > 0) {
+                battle();
+            } else if (yourHP <= 0) {
+                console.log('You lost the battle');
+                console.log('HP: ' + yourHP + "/100");
+                overWorld();
+            } else if (theirHP <= 0) {
+                console.log('You won the battle!');
+                let xpGain = 100;
+                console.log(yourPokemon + ' gained ' + xpGain + ' experience.');
+                xp += xpGain;
+                calculateLevel();
+                overWorld();
+            }
+
+        }
+        if (answer.battleOption === 'Run') {
+            theirHP = 100;
+            console.log('You returned from battle.');
+            trainerBattle();
+        }
+
+    });
 }
+
 function battle() {
 
     let yourDamage = 5 * level;
@@ -133,11 +173,12 @@ function battle() {
     }]).then(function (answer) {
         if (answer.battleOption === 'Attack') {
             yourHP -= theirDamage;
+            console.log(typeChart.grass(yourDamage));
             theirHP -= yourDamage;
             console.log("Your type is " + yourPkmType);
             console.log("Their type is " + theirPkmType);
             console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP.");
-            console.log("You dealt " + yourDamage + " damage to the " + wildPokemon +  ". They now have " + theirHP + " HP.");
+            console.log("You dealt " + typeChart.grass(yourDamage) + " damage to the " + wildPokemon + ". They now have " + theirHP + " HP.");
             if (yourHP > 0 && theirHP > 0) {
                 battle();
             } else if (yourHP <= 0) {
@@ -180,17 +221,15 @@ function overWorld() {
         }
         if (answer.foreground === 'Go to the Pokemon Center') {
             yourHP = 100;
-            console.log('Your pokemon has been fully healed');
+            console.log('Your Pokemon has been fully healed');
             console.log('HP: ' + yourHP + "/100");
             overWorld();
         }
         if (answer.foreground === 'Battle a trainer') {
-            console.log('Sorry we have not developed this feature of the game yet. Please come again.');
-            overWorld();
+            trainerBattle();
         }
         if (answer.foreground === 'Battle Gary') {
-            console.log('Sorry we have not developed this feature of the game yet. Please come again.');
-            overWorld();
+            battleGary();
         }
 
     });
@@ -206,7 +245,5 @@ startGame();
 
 module.exports = {
     yourPkmType: yourPkmType,
-    theirPkmType: theirPkmType,
-    theirHP: theirHP,
-    yourHP: yourHP,
+    theirPkmType: theirPkmType
 };
