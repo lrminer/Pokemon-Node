@@ -5,6 +5,7 @@ const axios = require('axios');
 
 let yourPokemon = "";
 let wildPokemon = "";
+let enemyPokemon = "";
 let xp = 500;
 let yourHP = 100;
 let theirHP = 100;
@@ -58,14 +59,14 @@ function choosePokemon() {
                 yourPkmType = 'Water';
                 console.log('Your Pokemon is a water type. It is weak to grass types but stong against fire types.');
             }
-            whatIsYourQuest();
+            overWorld();
             return yourPokemon;
 
         }
     });
 }
 
-function battleRdy() {
+function wildBattle() {
     inquirer.prompt([{
         type: 'confirm',
         message: 'Are you ready for battle?',
@@ -85,13 +86,39 @@ function battleRdy() {
                     
                 });
         } else {
-            whatIsYourQuest();
+            overWorld();
         }
     });
 }
 
-
-
+function battleGary () {
+    inquirer.prompt([{
+        type: 'confirm',
+        message: 'Are you ready to battle your rival, Gary?',
+        name: 'readyForBattle'
+    }]).then(function(answer){
+        if (answer.readyForBattle) {
+            if (yourPokemon === 'Bulbasaur') {
+                theirPkmType = 'fire';
+                enemyPokemon = 'Chamander';
+            } else if (yourPokemon === 'Charmander') {
+                theirPkmType = 'water';
+                enemyPokemon = 'Squirtle';
+            } else if (yourPokemon === 'Squirtle') {
+                theirPkmType = 'grass';
+                enemyPokemon = 'Bulbasaur';
+            } else {
+                theirPkmType = 'normal';
+                enemyPokemon = 'Eevee';
+            }
+            trainerBattle();
+                
+        }
+    });
+}
+function trainerBattle() {
+    console.log ('Work in progress');
+}
 function battle() {
 
     let yourDamage = 5 * level;
@@ -116,21 +143,21 @@ function battle() {
             } else if (yourHP <= 0) {
                 console.log('You lost the battle');
                 console.log('HP: ' + yourHP + "/100");
-                whatIsYourQuest();
+                overWorld();
             } else if (theirHP <= 0) {
                 console.log('You won the battle!');
                 let xpGain = 50;
-                console.log('You gained ' + xpGain + ' experience.');
+                console.log(yourPokemon + ' gained ' + xpGain + ' experience.');
                 xp += xpGain;
                 calculateLevel();
-                whatIsYourQuest();
+                overWorld();
             }
 
         }
         if (answer.battleOption === 'Run') {
             theirHP = 100;
             console.log('You returned from battle.');
-            whatIsYourQuest();
+            overWorld();
         }
 
     });
@@ -141,7 +168,7 @@ function calculateLevel() {
     console.log('Your pokemon is level ' + level + '.');
 }
 
-function whatIsYourQuest() {
+function overWorld() {
     inquirer.prompt([{
         type: 'list',
         name: 'foreground',
@@ -149,25 +176,27 @@ function whatIsYourQuest() {
         choices: ['Walk in the grass', 'Battle a trainer', 'Go to the Pokemon Center', 'Battle Gary']
     }]).then(function (answer) {
         if (answer.foreground === 'Walk in the grass') {
-            battleRdy();
+            wildBattle();
         }
         if (answer.foreground === 'Go to the Pokemon Center') {
             yourHP = 100;
             console.log('Your pokemon has been fully healed');
             console.log('HP: ' + yourHP + "/100");
-            whatIsYourQuest();
+            overWorld();
         }
         if (answer.foreground === 'Battle a trainer') {
             console.log('Sorry we have not developed this feature of the game yet. Please come again.');
-            whatIsYourQuest();
+            overWorld();
         }
         if (answer.foreground === 'Battle Gary') {
             console.log('Sorry we have not developed this feature of the game yet. Please come again.');
-            whatIsYourQuest();
+            overWorld();
         }
 
     });
 }
+
+
 
 // function statsAboutPokemon() {
 //     console.log();
