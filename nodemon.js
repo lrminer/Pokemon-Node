@@ -133,7 +133,7 @@ function battle() {
     }]).then(function (answer) {
         if (answer.battleOption === 'Attack') {
             yourHP -= theirDamage;
-            theirHP -= yourDamage;
+            theirHP -= typeChart.grass(yourDamage);
             console.log("Your type is " + yourPkmType);
             console.log("Their type is " + theirPkmType);
             console.log("You took " + theirDamage + " damage. You now have " + yourHP + " HP.");
