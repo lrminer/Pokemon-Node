@@ -28,7 +28,7 @@ function Pokemon(name, HP, Attack, Defense, SpAttack, SpDefense, Speed, type) {
     this.type = type;
     // this.type1 = type1 || "notype";
     // this.type2 = type2 || "notype";
-    this.HP = 100;
+    this.HP = 1000;
     this.Attack = Attack;
     this.Defense = Defense;
     this.SpAttack = SpAttack;
@@ -105,11 +105,14 @@ function battle() {
     }]).then(function (answer) {
         if (answer.battleOption === 'Attack') {
             // yourPokemon.typeChart(yourPokemon, enemyPokemon);
+            let damage = damageFn(enemyPokemon.Attack, yourPokemon.Defense, yourPokemon.level);
+            yourPokemon.HP -= damage;
+            damage = damageFn(yourPokemon.Attack, enemyPokemon.Defense, enemyPokemon.level);
+            enemyPokemon.HP -= damage;
 
-            yourPokemon.HP -= enemyPokemon.Attack;
-            enemyPokemon.HP -= yourPokemon.Attack;
 
 
+            ///CLEAN THESE CONSOLE.LOGS UP
             console.log("Your type is " + yourPokemon.type);
             console.log("Their type is " + enemyPokemon.type);
             console.log("You took " + " damage. You now have " + yourPokemon.HP + " HP.");
@@ -118,14 +121,14 @@ function battle() {
                 battle();
             } else if (yourPokemon.HP <= 0) {
                 console.log('You lost the battle');
-                console.log('HP: ' + yourHP + "/100");
+                // console.log('HP: ' + yourHP + "/100");
                 // overWorld();
             } else if (enemyPokemon.HP <= 0) {
                 console.log('You won the battle!');
-                let xpGain = 50;
-                console.log(yourPokemon + ' gained ' + xpGain + ' experience.');
-                xp += xpGain;
-                calculateLevel();
+                // let xpGain = 50;
+                // console.log(yourPokemon + ' gained ' + xpGain + ' experience.');
+                // xp += xpGain;
+                // calculateLevel();
                 // overWorld();
             }
 
@@ -137,6 +140,10 @@ function battle() {
         }
 
     });
+}
+
+function damageFn(attack, defense, level) {
+    return attack/defense*level;
 }
 
 // wildBattle();
