@@ -2,6 +2,8 @@ const inquirer = require('inquirer');
 const axios = require('axios');
 const pokemon = require('pokemon');
 
+
+
 function Pokemon (name, HP, Attack, Defense, SpAttack, SpDefense, Speed , type1, type2) {
     this.name = name;
     this.type1 = type1 || "notype";
@@ -40,5 +42,7 @@ function wildBattle() {
         } 
     });
 }
+
+
 
 wildBattle();
